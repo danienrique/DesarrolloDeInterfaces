@@ -7,13 +7,18 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+
 import java.awt.Color;
 import java.awt.Container;
 
@@ -24,6 +29,8 @@ import java.awt.Font;
 import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.EventListener;
 
 @SuppressWarnings("unused")
@@ -33,8 +40,10 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 	private JPanel Panel;
 	private JLabel NomCliente, Localidad, ListaCli;
 	private JTextField NomClienteTxt;
-	private JComboBox <String >LocalidadElec;
-	private JTextArea ListaCliTxt;
+	private JComboBox <String>LocalidadElec;
+	private JList ListaCliTxt;
+	private DefaultListModel<String> listaModClientes;
+    private JScrollPane scroll = new JScrollPane(ListaCliTxt);
 	private JCheckBox GrabadoraDvd, Wifi, Sincronizador, Backup;
 	private JButton Salir, Aniadir, Buscar, Eliminar, Cancelar;
 	private ButtonGroup grupo_1 = new ButtonGroup();
@@ -81,6 +90,23 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 		NomClienteTxt.setBorder(new LineBorder(new Color(126, 179, 231)));
 		NomClienteTxt.setBounds(140, 30, 150, 20);
 		Panel.add(NomClienteTxt);
+		NomClienteTxt.addKeyListener(new KeyAdapter(){
+			public void keyTyped(KeyEvent e) {
+				if(NomClienteTxt.getText().length()>=15) {
+					e.consume();
+				}
+			}
+		});
+		NomClienteTxt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(!NomClienteTxt.getText().trim().isEmpty()) {
+					activarComp();
+				}
+			}
+		});
+		
 		
 		Localidad = new JLabel("Localidad");
 		Localidad.setBounds(15, 60, 150, 20);
@@ -94,15 +120,41 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 		LocalidadElec.setBounds(140, 60, 110, 20);
 		Panel.add(LocalidadElec);
 		
+		Aniadir = new JButton("Añadir");
+		Aniadir.setBorder(new LineBorder(new Color(0, 128, 192), 2, true));
+		Aniadir.setBounds(23, 343, 89, 41);
+		Panel.add(Aniadir);
+		
+		Aniadir.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String texto = NomClienteTxt.getText().trim();
+                if (!texto.isEmpty()) {
+                    listaModClientes.addElement(texto);   
+                    NomClienteTxt.setText("");   
+                    NomClienteTxt.requestFocusInWindow();
+                } else {
+                    JOptionPane.showMessageDialog(null, "El campo está vacío");
+                }
+			}
+		});
+		
 		ListaCli = new JLabel("Lista de clientes");
 		ListaCli.setBounds(439, 30, 150, 20);
 		Panel.add(ListaCli);
 		
-		ListaCliTxt = new JTextArea();
+		ListaCliTxt = new JList<String>();
 		ListaCliTxt.setBorder(new LineBorder(new Color(126, 179, 231), 2));
 		ListaCliTxt.setBackground(new Color(240, 240, 240));
 		ListaCliTxt.setBounds(549, 30, 172, 123);
 		Panel.add(ListaCliTxt);
+		listaModClientes = new DefaultListModel<>();
+		ListaCliTxt = new JList<>(listaModClientes);
+		
+		
+		
 		
 		JLabel Opciones = new JLabel("Opciones");
 		Opciones.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -154,9 +206,8 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 		
 		Cancelar = new JButton("Cancelar");
 		Cancelar.setBorder(new LineBorder(new Color(0, 128, 192), 2, true));
-		Cancelar.setBounds(600, 346, 89, 41);
+		Cancelar.setBounds(600, 343, 89, 41);
 		Panel.add(Cancelar);
-		Cancelar.addActionListener(cancelarAccion);
 		
 		Salir = new JButton("Salir");
 		Salir.setBorder(new LineBorder(new Color(0, 128, 192), 2, true));
@@ -164,10 +215,7 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 		Panel.add(Salir);
 		Salir.addActionListener(salirAccion);
 		
-		Aniadir = new JButton("Añadir");
-		Aniadir.setBorder(new LineBorder(new Color(0, 128, 192), 2, true));
-		Aniadir.setBounds(23, 343, 89, 41);
-		Panel.add(Aniadir);
+		
 		
 		Buscar = new JButton("Buscar");
 		Buscar.setBorder(new LineBorder(new Color(0, 128, 192), 2, true));
@@ -290,19 +338,33 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 			}
 		}
 	};
-	ActionListener cancelarAccion = new ActionListener() {
-		
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if(e.getSource()==Cancelar) {
-			}
-		}
-	};
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	private void activarComp() {
+		P430.setEnabled(true);
+		P432.setEnabled(true);
+		P4Celeron.setEnabled(true);
+		AMD650.setEnabled(true);
+		Mb128.setEnabled(true);
+		Mb256.setEnabled(true);
+		Mb512.setEnabled(true);
+		Mb1024.setEnabled(true);
+		Mon15.setEnabled(true);
+		Mon17.setEnabled(true);
+		Tft15.setEnabled(true);
+		Tft17.setEnabled(true);
+		Gb60.setEnabled(true);
+		Gb80.setEnabled(true);
+		Gb120.setEnabled(true);
+		Gb200.setEnabled(true);
+		LocalidadElec.setEnabled(true);
+		GrabadoraDvd.setEnabled(true);
+		Wifi.setEnabled(true);; 
+		Sincronizador.setEnabled(true); 
+		Backup.setEnabled(true);;
 	}
 	
 }
