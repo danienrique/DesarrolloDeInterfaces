@@ -41,6 +41,7 @@ public class VentaDeOrdenadores extends JFrame implements ActionListener{
 	private JLabel NomCliente, Localidad, ListaCli;
 	private JTextField NomClienteTxt;
 	private JComboBox <String>LocalidadElec;
+	@SuppressWarnings("rawtypes")
 	private JList ListaCliTxt;
 	private DefaultListModel<String> listaModClientes;
     private JScrollPane scroll = new JScrollPane(ListaCliTxt);
